@@ -16,23 +16,25 @@ namespace EscapeRoomPOO
 
         private void ConfigurarApariencia(bool jugadorGano)
         {
-            Color colorSegunResultado = jugadorGano ? ConfiguracionJuego.ColorVictoria : ConfiguracionJuego.ColorDerrota;
+            Color colorSegunResultado = jugadorGano ? ConfiguracionJuego.ColorVictoria : ConfiguracionJuego.ColorRojo;
             BackColor              = colorSegunResultado;
             btnReiniciar.ForeColor = colorSegunResultado;
         }
 
         private void MostrarResultados(int puntaje, bool jugadorGano, int nivelAlcanzado, string mejorPuntaje)
         {
-            lblResultado.Text = jugadorGano ? "¡Lo lograste!" : "No lograste escapar...";
-            lblPuntaje.Text   = $"Puntaje: {puntaje} pts";
-            lblNivelInfo.Text = $"Nivel alcanzado: {nivelAlcanzado} / {ConfiguracionJuego.TotalNiveles}";
+            lblResultado.Text  = IdiomaJuego.MensajeResultado(jugadorGano);
+            lblPuntaje.Text    = IdiomaJuego.EtiquetaPuntajeFinal(puntaje);
+            lblNivelInfo.Text  = IdiomaJuego.EtiquetaNivelAlcanzado(nivelAlcanzado, ConfiguracionJuego.TotalNiveles);
+            btnReiniciar.Text  = IdiomaJuego.BotonReiniciar;
+            btnSalir.Text      = IdiomaJuego.BotonSalir;
             ConfigurarIndicadorRecord(puntaje, mejorPuntaje);
         }
 
         private void ConfigurarIndicadorRecord(int puntaje, string mejorPuntaje)
         {
             bool esNuevoRecord  = EsNuevoRecord(puntaje, mejorPuntaje);
-            lblRecord.Text      = esNuevoRecord ? "¡Nuevo record!" : $"Mejor puntaje: {mejorPuntaje} pts";
+            lblRecord.Text      = esNuevoRecord ? IdiomaJuego.MensajeNuevoRecord : IdiomaJuego.MensajeMejorPuntaje(mejorPuntaje);
             lblRecord.ForeColor = esNuevoRecord ? ConfiguracionJuego.ColorRecord : Color.White;
             lblRecord.Font      = new Font("Segoe UI", 11F, esNuevoRecord ? FontStyle.Bold : FontStyle.Regular);
         }

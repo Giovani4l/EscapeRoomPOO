@@ -20,10 +20,24 @@ namespace EscapeRoomPOO
         private bool     EsUltimoNivel  => nivelActual >= ConfiguracionJuego.TotalNiveles;
         private bool     SinIntentos    => AcertijoActual.Intentos <= 0;
 
-        public FormJuego()
+        public FormJuego(PartidaGuardada partidaCargada = null)
         {
             InitializeComponent();
-            IniciarPartida();
+            ActualizarTextosEstaticos();
+
+            if (partidaCargada != null)
+                RestaurarDesdePartida(partidaCargada);
+            else
+                IniciarPartida();
+        }
+
+    
+        private void ActualizarTextosEstaticos()
+        {
+            btnPista.Text    = IdiomaJuego.BotonPista;
+            btnGuardar.Text  = IdiomaJuego.BotonGuardarPartida;
+            btnRendirse.Text = IdiomaJuego.BotonAbandonar;
+            btnValidar.Text  = IdiomaJuego.BotonValidar;
         }
 
         private void IniciarPartida()
@@ -31,6 +45,22 @@ namespace EscapeRoomPOO
             nivelActual  = 1;
             puntajeTotal = 0;
             CargarNivel();
+            timerJuego.Start();
+        }
+
+        private void RestaurarDesdePartida(PartidaGuardada partida)
+        {
+            IdiomaJuego.CambiarIdioma(
+                (IdiomaJuego.Idioma)Enum.Parse(typeof(IdiomaJuego.Idioma), partida.Idioma));
+
+            nivelActual          = partida.NivelActual;
+            puntajeTotal         = partida.PuntajeTotal;
+            indiceAcertijoActual = partida.IndiceAcertijo;
+            segundosRestantes    = partida.SegundosRestantes;
+            jugadorUsoPista      = false;
+
+            acertijosDelNivel = GenerarAcertijosAleatorios();
+            RefrescarPantalla();
             timerJuego.Start();
         }
 
@@ -66,16 +96,21 @@ namespace EscapeRoomPOO
             }
         }
 
+     
         private void RefrescarPantalla()
         {
-            lblNivel.Text             = $"NIVEL {nivelActual} / {ConfiguracionJuego.TotalNiveles}";
+            lblNivel.Text             = IdiomaJuego.EtiquetaNivel(nivelActual, ConfiguracionJuego.TotalNiveles);
             lblTipo.Text              = $"[{AcertijoActual.ObtenerTipo()}]";
-            lblPuntaje.Text           = $"Puntaje: {puntajeTotal}";
-            lblIntentos.Text          = $"Intentos: {AcertijoActual.Intentos}";
-            lblProgreso.Text          = $"Acertijo {indiceAcertijoActual + 1} de {ConfiguracionJuego.AcertijosPorNivel}";
+            lblPuntaje.Text           = IdiomaJuego.EtiquetaPuntaje(puntajeTotal);
+            lblIntentos.Text          = IdiomaJuego.EtiquetaIntentos(AcertijoActual.Intentos);
+            lblProgreso.Text          = IdiomaJuego.EtiquetaProgreso(indiceAcertijoActual + 1, ConfiguracionJuego.AcertijosPorNivel);
             lblPregunta.Text          = AcertijoActual.Pregunta;
-            lblMejorPuntaje.Text      = $"Mejor: {RepositorioPuntajes.LeerMejorPuntaje()} pts";
+            lblMejorPuntaje.Text      = IdiomaJuego.EtiquetaMejorPuntaje(RepositorioPuntajes.LeerMejorPuntaje());
             progressBarAcertijo.Value = (indiceAcertijoActual * 100) / ConfiguracionJuego.AcertijosPorNivel;
+            btnValidar.Text           = IdiomaJuego.BotonValidar;
+            btnPista.Text             = IdiomaJuego.BotonPista;
+            btnRendirse.Text          = IdiomaJuego.BotonAbandonar;
+            btnGuardar.Text           = IdiomaJuego.BotonGuardarPartida;
 
             OcultarFeedback();
             LimpiarYEnfocarInput();
@@ -86,7 +121,7 @@ namespace EscapeRoomPOO
             lblFeedback.Text        = "";
             lblPista.Visible        = false;
             panelPregunta.BackColor = SystemColors.ControlLight;
-            lblTimer.ForeColor      = ConfiguracionJuego.ColorTimerNormal;
+            lblTimer.ForeColor      = ConfiguracionJuego.ColorVerde;
         }
 
         private void LimpiarYEnfocarInput()
@@ -95,6 +130,7 @@ namespace EscapeRoomPOO
             txtRespuesta.Focus();
         }
 
+      
         private void timerJuego_Tick(object sender, EventArgs e)
         {
             segundosRestantes--;
@@ -119,6 +155,7 @@ namespace EscapeRoomPOO
             TerminarJuego(jugadorGano: false);
         }
 
+      
         private void btnValidar_Click(object sender, EventArgs e) => ProcesarRespuesta();
 
         private void txtRespuesta_KeyDown(object sender, KeyEventArgs e)
@@ -132,7 +169,7 @@ namespace EscapeRoomPOO
 
             if (string.IsNullOrEmpty(respuestaDelUsuario))
             {
-                MostrarFeedback("Escribe una respuesta primero.", ConfiguracionJuego.ColorTimerAlerta);
+                MostrarFeedback(IdiomaJuego.MensajeRespuestaVacia, ConfiguracionJuego.ColorTimerAlerta);
                 return;
             }
 
@@ -149,9 +186,9 @@ namespace EscapeRoomPOO
             int puntosGanados = AcertijoActual.CalcularPuntos(segundosRestantes, jugadorUsoPista);
             puntajeTotal     += puntosGanados;
 
-            MostrarFeedback($"¡Correcto! +{puntosGanados} puntos", ConfiguracionJuego.ColorCorrecto);
-            panelPregunta.BackColor = ConfiguracionJuego.ColorPanelCorrecto;
-            lblPuntaje.Text         = $"Puntaje: {puntajeTotal}";
+            MostrarFeedback(IdiomaJuego.MensajeCorrecto(puntosGanados), ConfiguracionJuego.ColorVerde);
+            panelPregunta.BackColor = ConfiguracionJuego.ColorPanelVerde;
+            lblPuntaje.Text         = IdiomaJuego.EtiquetaPuntaje(puntajeTotal);
 
             BloquearInput();
             EjecutarDespuesDe(ConfiguracionJuego.MsEsperaRespuestaCorrecta, () =>
@@ -163,18 +200,18 @@ namespace EscapeRoomPOO
 
         private void ManejarRespuestaIncorrecta()
         {
-            panelPregunta.BackColor = ConfiguracionJuego.ColorPanelError;
-            lblIntentos.Text        = $"Intentos: {AcertijoActual.Intentos}";
+            panelPregunta.BackColor = ConfiguracionJuego.ColorPanelRojo;
+            lblIntentos.Text        = IdiomaJuego.EtiquetaIntentos(AcertijoActual.Intentos);
 
             if (SinIntentos)
             {
-                MostrarFeedback("Sin intentos. ¡Juego terminado!", ConfiguracionJuego.ColorIncorrecto);
+                MostrarFeedback(IdiomaJuego.MensajeSinIntentos, ConfiguracionJuego.ColorRojo);
                 timerJuego.Stop();
                 EjecutarDespuesDe(ConfiguracionJuego.MsEsperaDerrota, () => TerminarJuego(jugadorGano: false));
             }
             else
             {
-                MostrarFeedback($"Incorrecto. Te quedan {AcertijoActual.Intentos} intento(s).", ConfiguracionJuego.ColorIncorrecto);
+                MostrarFeedback(IdiomaJuego.MensajeIncorrecto(AcertijoActual.Intentos), ConfiguracionJuego.ColorRojo);
                 LimpiarYEnfocarInput();
             }
         }
@@ -209,6 +246,7 @@ namespace EscapeRoomPOO
             temporizadorDeEspera.Start();
         }
 
+       
         private void AvanzarAcertijo()
         {
             indiceAcertijoActual++;
@@ -223,15 +261,35 @@ namespace EscapeRoomPOO
         {
             timerJuego.Stop();
             MessageBox.Show(
-                $"¡Nivel {nivelActual} superado!\nPuntaje: {puntajeTotal}",
-                "Nivel completado",
+                IdiomaJuego.MensajeNivelSuperado(nivelActual, puntajeTotal),
+                IdiomaJuego.TituloNivelCompletado,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
             if (EsUltimoNivel)
+            {
+                GuardarPartidaGanada();
                 TerminarJuego(jugadorGano: true);
+            }
             else
                 AvanzarAlSiguienteNivel();
+        }
+
+        private void GuardarPartidaGanada()
+        {
+            if (!RepositorioPartidas.HayRanurasDisponibles()) return;
+
+            var partida = new PartidaGuardada
+            {
+                Nombre            = IdiomaJuego.NombrePartidaGanada(puntajeTotal),
+                NivelActual       = nivelActual,
+                PuntajeTotal      = puntajeTotal,
+                IndiceAcertijo    = indiceAcertijoActual,
+                SegundosRestantes = segundosRestantes,
+                Idioma            = IdiomaJuego.IdiomaActual.ToString(),
+            };
+
+            RepositorioPartidas.GuardarPartida(partida);
         }
 
         private void AvanzarAlSiguienteNivel()
@@ -247,11 +305,12 @@ namespace EscapeRoomPOO
             RefrescarPantalla();
         }
 
+      
         private void btnPista_Click(object sender, EventArgs e)
         {
             bool jugadorConfirmo = MessageBox.Show(
-                "Pedir pista resta puntos. ¿Continuar?",
-                "Pista",
+                IdiomaJuego.MensajePistaConfirmar,
+                IdiomaJuego.TituloPista,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) == DialogResult.Yes;
 
@@ -262,15 +321,61 @@ namespace EscapeRoomPOO
         private void MostrarPista()
         {
             jugadorUsoPista  = true;
-            lblPista.Text    = "Pista: " + AcertijoActual.Pista;
+            lblPista.Text    = IdiomaJuego.PrefijoPista + AcertijoActual.Pista;
             lblPista.Visible = true;
         }
 
+       
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            if (!RepositorioPartidas.HayRanurasDisponibles())
+            {
+                MessageBox.Show(
+                    IdiomaJuego.MensajeRanuraLlena,
+                    IdiomaJuego.BotonGuardarPartida,
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
+            string nombre = Microsoft.VisualBasic.Interaction.InputBox(
+                IdiomaJuego.MensajeGuardarNombre,
+                IdiomaJuego.BotonGuardarPartida,
+                $"Partida — Nivel {nivelActual}");
+
+            if (string.IsNullOrWhiteSpace(nombre)) return;
+
+            timerJuego.Stop();
+
+            var partida = new PartidaGuardada
+            {
+                Nombre            = nombre,
+                NivelActual       = nivelActual,
+                PuntajeTotal      = puntajeTotal,
+                IndiceAcertijo    = indiceAcertijoActual,
+                SegundosRestantes = segundosRestantes,
+                Idioma            = IdiomaJuego.IdiomaActual.ToString(),
+            };
+
+            bool guardadoExitoso = RepositorioPartidas.GuardarPartida(partida);
+
+            MessageBox.Show(
+                guardadoExitoso
+                    ? IdiomaJuego.MensajePartidaGuardada
+                    : IdiomaJuego.MensajeRanuraLlena,
+                IdiomaJuego.BotonGuardarPartida,
+                MessageBoxButtons.OK,
+                guardadoExitoso ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+
+            timerJuego.Start();
+        }
+
+       
         private void btnRendirse_Click(object sender, EventArgs e)
         {
             bool jugadorConfirmo = MessageBox.Show(
-                "¿Seguro que quieres abandonar?",
-                "Abandonar",
+                IdiomaJuego.MensajeAbandonarConfirmar,
+                IdiomaJuego.TituloAbandonar,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
 
@@ -281,6 +386,7 @@ namespace EscapeRoomPOO
             }
         }
 
+       
         private void TerminarJuego(bool jugadorGano)
         {
             timerJuego.Stop();

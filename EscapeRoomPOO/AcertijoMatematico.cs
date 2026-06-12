@@ -13,16 +13,19 @@ namespace EscapeRoomPOO
         {
             PuntosBase = 100 + nivel * 20;
 
-            string[] operacionesDisponibles = nivel < ConfiguracionJuego.NivelParaOperacionesAvanzadas ? OperacionesBasicas : OperacionesAvanzadas;
-            string   operacion              = operacionesDisponibles[generadorAleatorio.Next(operacionesDisponibles.Length)];
+            string[] operacionesDisponibles = nivel < ConfiguracionJuego.NivelParaOperacionesAvanzadas
+                ? OperacionesBasicas
+                : OperacionesAvanzadas;
+
+            string operacion = operacionesDisponibles[generadorAleatorio.Next(operacionesDisponibles.Length)];
 
             int operandoA = generadorAleatorio.Next(1, 10 + nivel * 5);
             int operandoB = generadorAleatorio.Next(1, 10 + nivel * 5);
 
             _respuestaCorrecta = AplicarOperacion(operacion, ref operandoA, ref operandoB, generadorAleatorio);
 
-            Pregunta = $"¿Cuánto es {operandoA} {operacion} {operandoB}?";
-            Pista    = $"El resultado está entre {_respuestaCorrecta - 3} y {_respuestaCorrecta + 3}";
+            Pregunta = IdiomaJuego.PreguntaMatematica(operandoA, operacion, operandoB);
+            Pista    = IdiomaJuego.PistaMatematica(_respuestaCorrecta - 3, _respuestaCorrecta + 3);
         }
 
         private int AplicarOperacion(string operacion, ref int operandoA, ref int operandoB, Random generadorAleatorio)
@@ -43,6 +46,6 @@ namespace EscapeRoomPOO
         public override bool ValidarRespuesta(string respuesta)
             => int.TryParse(respuesta.Trim(), out int resultado) && resultado == _respuestaCorrecta;
 
-        public override string ObtenerTipo() => "Matemáticas";
+        public override string ObtenerTipo() => IdiomaJuego.TipoMatematicas;
     }
 }

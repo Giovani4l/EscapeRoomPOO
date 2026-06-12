@@ -35,6 +35,7 @@ namespace EscapeRoomPOO
             this.lblPista            = new System.Windows.Forms.Label();
             this.panelBottom         = new System.Windows.Forms.Panel();
             this.btnPista            = new System.Windows.Forms.Button();
+            this.btnGuardar          = new System.Windows.Forms.Button();
             this.btnRendirse         = new System.Windows.Forms.Button();
             this.lblInstruccion      = new System.Windows.Forms.Label();
 
@@ -166,7 +167,7 @@ namespace EscapeRoomPOO
             this.txtRespuesta.Font            = new System.Drawing.Font("Segoe UI", 13F);
             this.txtRespuesta.Location        = new System.Drawing.Point(12, 278);
             this.txtRespuesta.Name            = "txtRespuesta";
-            this.txtRespuesta.PlaceholderText = "Escribe tu respuesta aqui...";
+            this.txtRespuesta.PlaceholderText = "Escribe tu respuesta...";
             this.txtRespuesta.Size            = new System.Drawing.Size(472, 34);
             this.txtRespuesta.TabIndex        = 4;
             this.txtRespuesta.KeyDown        += new System.Windows.Forms.KeyEventHandler(this.txtRespuesta_KeyDown);
@@ -214,7 +215,7 @@ namespace EscapeRoomPOO
             this.lblPista.Location  = new System.Drawing.Point(12, 386);
             this.lblPista.Name      = "lblPista";
             this.lblPista.Padding   = new System.Windows.Forms.Padding(8, 0, 0, 0);
-            this.lblPista.Size      = new System.Drawing.Size(592, 40);
+            this.lblPista.Size      = new System.Drawing.Size(592, 36);
             this.lblPista.TabIndex  = 8;
             this.lblPista.Text      = "";
             this.lblPista.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -223,10 +224,11 @@ namespace EscapeRoomPOO
             // panelBottom
             this.panelBottom.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panelBottom.Controls.Add(this.btnPista);
+            this.panelBottom.Controls.Add(this.btnGuardar);
             this.panelBottom.Controls.Add(this.btnRendirse);
             this.panelBottom.Controls.Add(this.lblInstruccion);
             this.panelBottom.Dock     = System.Windows.Forms.DockStyle.Bottom;
-            this.panelBottom.Location = new System.Drawing.Point(0, 446);
+            this.panelBottom.Location = new System.Drawing.Point(0, 436);
             this.panelBottom.Name     = "panelBottom";
             this.panelBottom.Size     = new System.Drawing.Size(616, 120);
             this.panelBottom.TabIndex = 9;
@@ -236,28 +238,43 @@ namespace EscapeRoomPOO
             this.btnPista.Cursor                    = System.Windows.Forms.Cursors.Hand;
             this.btnPista.FlatStyle                 = System.Windows.Forms.FlatStyle.Flat;
             this.btnPista.FlatAppearance.BorderSize = 0;
-            this.btnPista.Font                      = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnPista.Font                      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnPista.ForeColor                 = System.Drawing.Color.FromArgb(60, 40, 0);
-            this.btnPista.Location                  = new System.Drawing.Point(16, 28);
+            this.btnPista.Location                  = new System.Drawing.Point(12, 28);
             this.btnPista.Name                      = "btnPista";
-            this.btnPista.Size                      = new System.Drawing.Size(160, 44);
+            this.btnPista.Size                      = new System.Drawing.Size(130, 40);
             this.btnPista.TabIndex                  = 0;
             this.btnPista.Text                      = "Pedir pista";
             this.btnPista.UseVisualStyleBackColor   = false;
             this.btnPista.Click                    += new System.EventHandler(this.btnPista_Click);
+
+            // btnGuardar
+            this.btnGuardar.BackColor                 = System.Drawing.Color.FromArgb(52, 152, 219);
+            this.btnGuardar.Cursor                    = System.Windows.Forms.Cursors.Hand;
+            this.btnGuardar.FlatStyle                 = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGuardar.FlatAppearance.BorderSize = 0;
+            this.btnGuardar.Font                      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnGuardar.ForeColor                 = System.Drawing.Color.White;
+            this.btnGuardar.Location                  = new System.Drawing.Point(158, 28);
+            this.btnGuardar.Name                      = "btnGuardar";
+            this.btnGuardar.Size                      = new System.Drawing.Size(130, 40);
+            this.btnGuardar.TabIndex                  = 1;
+            this.btnGuardar.Text                      = "Guardar partida";
+            this.btnGuardar.UseVisualStyleBackColor   = false;
+            this.btnGuardar.Click                    += new System.EventHandler(this.btnGuardar_Click);
 
             // btnRendirse
             this.btnRendirse.BackColor                 = System.Drawing.Color.FromArgb(192, 57, 43);
             this.btnRendirse.Cursor                    = System.Windows.Forms.Cursors.Hand;
             this.btnRendirse.FlatStyle                 = System.Windows.Forms.FlatStyle.Flat;
             this.btnRendirse.FlatAppearance.BorderSize = 0;
-            this.btnRendirse.Font                      = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.btnRendirse.Font                      = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnRendirse.ForeColor                 = System.Drawing.Color.White;
-            this.btnRendirse.Location                  = new System.Drawing.Point(432, 28);
+            this.btnRendirse.Location                  = new System.Drawing.Point(462, 28);
             this.btnRendirse.Name                      = "btnRendirse";
-            this.btnRendirse.Size                      = new System.Drawing.Size(160, 44);
-            this.btnRendirse.TabIndex                  = 1;
-            this.btnRendirse.Text                      = "Abandonar";
+            this.btnRendirse.Size                      = new System.Drawing.Size(142, 40);
+            this.btnRendirse.TabIndex                  = 2;
+            this.btnRendirse.Text                      = "Abandonar y Guardar";
             this.btnRendirse.UseVisualStyleBackColor   = false;
             this.btnRendirse.Click                    += new System.EventHandler(this.btnRendirse_Click);
 
@@ -269,14 +286,14 @@ namespace EscapeRoomPOO
             this.lblInstruccion.Location  = new System.Drawing.Point(0, 94);
             this.lblInstruccion.Name      = "lblInstruccion";
             this.lblInstruccion.Size      = new System.Drawing.Size(616, 26);
-            this.lblInstruccion.TabIndex  = 2;
-            this.lblInstruccion.Text      = "Presiona Enter o Validar para responder  -  La pista resta puntos";
+            this.lblInstruccion.TabIndex  = 3;
+            this.lblInstruccion.Text      = "Presiona Enter o Validar para responder";
             this.lblInstruccion.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 
             // FormJuego
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode       = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize          = new System.Drawing.Size(616, 566);
+            this.ClientSize          = new System.Drawing.Size(616, 556);
             this.Controls.Add(this.panelTop);
             this.Controls.Add(this.lblProgreso);
             this.Controls.Add(this.progressBarAcertijo);
@@ -320,6 +337,7 @@ namespace EscapeRoomPOO
         private System.Windows.Forms.TextBox     txtRespuesta;
         private System.Windows.Forms.Button      btnValidar;
         private System.Windows.Forms.Button      btnPista;
+        private System.Windows.Forms.Button      btnGuardar;
         private System.Windows.Forms.Button      btnRendirse;
         private System.Windows.Forms.ProgressBar progressBarTimer;
         private System.Windows.Forms.ProgressBar progressBarAcertijo;

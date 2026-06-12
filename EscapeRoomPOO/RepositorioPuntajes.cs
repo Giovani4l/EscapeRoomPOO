@@ -54,7 +54,7 @@ namespace EscapeRoomPOO
 
         private static int ExtraerPuntajeDeRegistro(string registro)
         {
-            // Formato esperado: "dd/MM/yyyy HH:mm | Puntaje: 450 | Nivel: 3 | GANÓ"
+          
             int posicion = registro.IndexOf("Puntaje: ");
             if (posicion < 0) return 0;
 
