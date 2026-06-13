@@ -8,8 +8,8 @@ En este juego, el jugador debe resolver acertijos de lógica, matemáticas y len
 ---
 
 ## 👥 Autores
-- **Axel Giovani Gonzalez Lopez** (Matrícula: I24050379)
-- **Raúl de Jesús Berlanga Martínez** (Matrícula: I24050400)
+- **Axel Giovani Gonzalez Lopez** 
+- **Raúl de Jesús Berlanga Martínez** 
 
 ---
 
